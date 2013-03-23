@@ -1,13 +1,16 @@
 /*!
  * html5-shim.js v0.1.0
  * https://github.com/snandy/html5-shim
- * @snandy 2013-03-21 13:45:01
+ * @snandy 2013-03-23 09:22:42
  *
  */
-~function($){
+~function(window){
+
+var $ = window.jQuery;
 	
 var scriptObj = $('script[shim]'),
-	shimData = scriptObj.attr('shim').split('|'),
+	delayTime = scriptObj.attr('delay') || 10,
+	shimData  = scriptObj.attr('shim').split('|'),
 	html5Shim = {};
 	
 /**
@@ -15,13 +18,16 @@ var scriptObj = $('script[shim]'),
  * 只允许一个元素添加autofocus，在DomReady后执行
  */
 html5Shim.autofocus = function() {
-	$(function() {
-		var firstFocusEl = $('input,textarea,button,select').filter('[autofocus]')[0];
-		console.log(firstFocusEl.nodeName)
-		if (firstFocusEl) {
-			firstFocusEl.focus()
-		}
-	})
+	if (this === html5Shim) {
+		$(function() {
+			var firstFocusEl = $('input,textarea,button,select').filter('[autofocus]')[0];
+			if (firstFocusEl) {
+				firstFocusEl.focus()
+			}
+		})		
+	} else {
+		this[0].focus()
+	}
 };
 
 /**
@@ -47,6 +53,9 @@ html5Shim.placeholder = function() {
 		})
 	})
 };
+$.each(html5Shim, function(name, func) {
+	$.fn[name] = func
+});
 
 function executeAll() {
 	var method
@@ -54,13 +63,18 @@ function executeAll() {
 		html5Shim[method]()
 	}
 }
-	
-if (shimData.length === 1 && shimData[0] === 'all') {
-	executeAll()
-} else {
-	$(shimData).each(function(i, method) {
-		html5Shim[method]()
-	})
-}
 
-}(jQuery);
+setTimeout(function() {
+	if (shimData.length === 1 && shimData[0] === 'all') {
+		executeAll()
+	} else {
+		$(shimData).each(function(i, method) {
+			html5Shim[method]()
+		})
+	}	
+}, delayTime);
+
+// exports
+window.html5Shim = html5Shim;
+
+}(this);

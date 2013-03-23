@@ -1,3 +1,6 @@
+$.each(html5Shim, function(name, func) {
+	$.fn[name] = func
+});
 
 function executeAll() {
 	var method
