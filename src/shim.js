@@ -5,13 +5,18 @@ function executeAll() {
 		html5Shim[method]()
 	}
 }
-	
-if (shimData.length === 1 && shimData[0] === 'all') {
-	executeAll()
-} else {
-	$(shimData).each(function(i, method) {
-		html5Shim[method]()
-	})
-}
 
-}(jQuery);
+setTimeout(function() {
+	if (shimData.length === 1 && shimData[0] === 'all') {
+		executeAll()
+	} else {
+		$(shimData).each(function(i, method) {
+			html5Shim[method]()
+		})
+	}	
+}, delayTime);
+
+// exports
+window.html5Shim = html5Shim;
+
+}(this);
